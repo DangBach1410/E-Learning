@@ -3,6 +3,7 @@ package com.example.elearning.controller;
 import com.example.elearning.dto.CertificateDTO;
 import com.example.elearning.service.CertificateService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,7 @@ public class CertificateController {
 
     @PostMapping("/{courseId}")
     public ResponseEntity<?> createCertificate(@PathVariable Long courseId, @RequestBody CertificateDTO certificateDTO) {
-        return ResponseEntity.ok(certificateService.createCertificate(courseId, certificateDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(certificateService.createCertificate(courseId, certificateDTO));
     }
 }
 
