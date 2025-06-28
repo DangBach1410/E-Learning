@@ -2,6 +2,7 @@ package com.example.elearning.controller;
 
 import com.example.elearning.dto.CertificateDTO;
 import com.example.elearning.service.CertificateService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +26,12 @@ public class CertificateController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createCertificate(@RequestBody CertificateDTO certificateDTO) {
+    public ResponseEntity<?> createCertificate(@RequestBody @Valid CertificateDTO certificateDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(certificateService.createCertificate(certificateDTO));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCertificate(@PathVariable Long id, @RequestBody CertificateDTO certificateDTO) {
+    public ResponseEntity<?> updateCertificate(@PathVariable Long id, @RequestBody @Valid CertificateDTO certificateDTO) {
         return ResponseEntity.ok(certificateService.updateCertificate(id, certificateDTO));
     }
 

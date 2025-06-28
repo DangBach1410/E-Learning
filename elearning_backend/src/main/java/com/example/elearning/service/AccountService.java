@@ -25,7 +25,7 @@ public class AccountService implements IAccountService {
     @Override
     public AccountDTO register(AccountDTO accountDTO) {
         if (accountRepository.existsByUsername(accountDTO.getUsername())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
         }
         Account account = modelMapper.map(accountDTO, Account.class);
         account.setPassword(passwordEncoder.encode(accountDTO.getPassword()));

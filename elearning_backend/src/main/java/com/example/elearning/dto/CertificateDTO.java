@@ -1,15 +1,18 @@
 package com.example.elearning.dto;
 
 import com.example.elearning.model.CertificateType;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
-
-import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class CertificateDTO {
 
-    private CertificateType type; // ASSOCIATE, PROFESSIONAL, MASTER
+    @NotNull(message = "Certificate type is required")
+    @Enumerated(EnumType.STRING)
+    private CertificateType type;
 }
 
