@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "certificates")
@@ -18,13 +19,9 @@ public class Certificate {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private CertificateType type; // Enum: ASSOCIATE, PROFESSIONAL, MASTER
+    private CertificateType type;
 
-    @OneToOne
-    @JoinColumn(name = "course_id", unique = true)
-    private Course course;
-
-    @Column(nullable = false)
-    private LocalDate issueDate;
+    @OneToMany(mappedBy = "certificate", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Course> courses;
 }
 

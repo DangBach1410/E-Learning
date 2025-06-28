@@ -7,6 +7,8 @@ import java.util.List;
 public interface ICertificateService {
     List<CertificateDTO> getAllCertificates();
     CertificateDTO getCertificateByCourse(Long courseId);
-    CertificateDTO createCertificate(Long courseId, CertificateDTO dto);
+    CertificateDTO createCertificate(CertificateDTO dto);
+    CertificateDTO updateCertificate(Long id, CertificateDTO dto);
+    void deleteCertificate(Long id);
 }
 

@@ -6,9 +6,13 @@ import com.example.elearning.model.Lesson;
 import com.example.elearning.repository.CourseRepository;
 import com.example.elearning.repository.LessonRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +20,7 @@ public class LessonService implements ILessonService {
 
     private final LessonRepository lessonRepo;
     private final CourseRepository courseRepo;
+    private final ModelMapper modelMapper;
 
     @Override
     public LessonDTO addLesson(Long courseId, LessonDTO dto) {
@@ -29,7 +34,8 @@ public class LessonService implements ILessonService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Lesson title already exists in this course");
         }
 
-        Lesson lesson = new Lesson(null, dto.getTitle(), dto.getDurationHours(), dto.getDescription(), course);
+        Lesson lesson = modelMapper.map(dto, Lesson.class);
+        lesson.setCourse(course);
         return mapToDTO(lessonRepo.save(lesson));
     }
 
@@ -45,10 +51,7 @@ public class LessonService implements ILessonService {
         Lesson lesson = lessonRepo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Lesson not found"));
 
-        lesson.setTitle(dto.getTitle());
-        lesson.setDurationHours(dto.getDurationHours());
-        lesson.setDescription(dto.getDescription());
-
+        modelMapper.map(dto, lesson);
         return mapToDTO(lessonRepo.save(lesson));
     }
 
@@ -61,7 +64,6 @@ public class LessonService implements ILessonService {
     }
 
     private LessonDTO mapToDTO(Lesson l) {
-        return new LessonDTO(l.getTitle(), l.getDurationHours(), l.getDescription());
+        return modelMapper.map(l, LessonDTO.class);
     }
 }
-

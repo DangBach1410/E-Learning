@@ -33,4 +33,8 @@ public class Course {
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Lesson> lessons = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "certificate_id")
+    private Certificate certificate;
 }

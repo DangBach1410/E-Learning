@@ -24,10 +24,22 @@ public class CertificateController {
         return ResponseEntity.ok(certificateService.getCertificateByCourse(courseId));
     }
 
-    @PostMapping("/{courseId}")
-    public ResponseEntity<?> createCertificate(@PathVariable Long courseId, @RequestBody CertificateDTO certificateDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(certificateService.createCertificate(courseId, certificateDTO));
+    @PostMapping
+    public ResponseEntity<?> createCertificate(@RequestBody CertificateDTO certificateDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(certificateService.createCertificate(certificateDTO));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateCertificate(@PathVariable Long id, @RequestBody CertificateDTO certificateDTO) {
+        return ResponseEntity.ok(certificateService.updateCertificate(id, certificateDTO));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteCertificate(@PathVariable Long id) {
+        certificateService.deleteCertificate(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
 
 

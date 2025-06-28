@@ -6,6 +6,7 @@ import com.example.elearning.model.Course;
 import com.example.elearning.repository.CategoryRepository;
 import com.example.elearning.repository.CourseRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,6 +20,7 @@ public class CourseService implements ICourseService {
 
     private final CourseRepository courseRepo;
     private final CategoryRepository categoryRepo;
+    private final ModelMapper modelMapper;
 
     @Override
     public List<CourseDTO> getAllCourses() {
@@ -38,11 +40,7 @@ public class CourseService implements ICourseService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Course name already exists");
         }
 
-        Course course = new Course();
-        course.setName(dto.getName());
-        course.setNumberOfSessions(dto.getNumberOfSessions());
-        course.setDurationHours(dto.getDurationHours());
-        course.setDescription(dto.getDescription());
+        Course course = modelMapper.map(dto, Course.class);
         course.setCategory(getCategory(dto.getCategoryId()));
 
         return mapToDTO(courseRepo.save(course));
@@ -53,10 +51,7 @@ public class CourseService implements ICourseService {
         Course course = courseRepo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Course not found"));
 
-        course.setName(dto.getName());
-        course.setNumberOfSessions(dto.getNumberOfSessions());
-        course.setDurationHours(dto.getDurationHours());
-        course.setDescription(dto.getDescription());
+        modelMapper.map(dto, course);
         course.setCategory(getCategory(dto.getCategoryId()));
 
         return mapToDTO(courseRepo.save(course));
@@ -83,13 +78,9 @@ public class CourseService implements ICourseService {
     }
 
     private CourseDTO mapToDTO(Course course) {
-        return new CourseDTO(
-                course.getName(),
-                course.getNumberOfSessions(),
-                course.getDurationHours(),
-                course.getDescription(),
-                course.getCategory().getId()
-        );
+        CourseDTO dto = modelMapper.map(course, CourseDTO.class);
+        dto.setCategoryId(course.getCategory().getId());
+        return dto;
     }
 
     private Category getCategory(Long id) {
@@ -97,4 +88,3 @@ public class CourseService implements ICourseService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category not found"));
     }
 }
-

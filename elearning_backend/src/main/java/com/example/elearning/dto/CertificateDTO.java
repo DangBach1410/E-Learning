@@ -11,7 +11,5 @@ import java.time.LocalDate;
 public class CertificateDTO {
 
     private CertificateType type; // ASSOCIATE, PROFESSIONAL, MASTER
-
-    private LocalDate issueDate;
 }
 
