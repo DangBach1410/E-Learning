@@ -4,6 +4,7 @@ import com.example.elearning.dto.CourseDTO;
 import com.example.elearning.service.CourseService;
 import jakarta.validation.Valid;
 import lombok.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,18 +27,18 @@ public class CourseController {
 
     @PostMapping
     public ResponseEntity<?> createCourse(@RequestBody @Valid CourseDTO courseDTO) {
-        return ResponseEntity.ok(courseService.createCourse(courseDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(courseService.createCourse(courseDTO));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCourse(@PathVariable Long id, @RequestBody @Valid CourseDTO courseDTO) {
-        return ResponseEntity.ok(courseService.updateCourse(id, courseDTO));
+        return ResponseEntity.status(HttpStatus.OK).body(courseService.updateCourse(id, courseDTO));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCourse(@PathVariable Long id) {
         courseService.deleteCourse(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/search")
