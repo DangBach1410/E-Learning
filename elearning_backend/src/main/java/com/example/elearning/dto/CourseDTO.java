@@ -6,10 +6,14 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class CourseDTO {
+
+    private Long id;
 
     @NotBlank(message = "Course name is required")
     @Size(min = 2, max = 100, message = "Course name must be between 2 and 100 characters")
@@ -27,6 +31,5 @@ public class CourseDTO {
     @Size(min = 10, max = 1000, message = "Description must be between 10 and 1000 characters")
     private String description;
 
-    @NotNull(message = "Category ID is required")
-    private Long categoryId;
+    private List<LessonDTO> lessons;
 }

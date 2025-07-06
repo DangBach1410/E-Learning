@@ -20,6 +20,7 @@ public class CourseService implements ICourseService {
 
     private final CourseRepository courseRepo;
     private final CategoryRepository categoryRepo;
+    
     private final ModelMapper modelMapper;
 
     @Override
@@ -41,7 +42,7 @@ public class CourseService implements ICourseService {
         }
 
         Course course = modelMapper.map(dto, Course.class);
-        course.setCategory(getCategory(dto.getCategoryId()));
+//        course.setCategory(getCategory(dto.getCategoryId()));
 
         return mapToDTO(courseRepo.save(course));
     }
@@ -52,7 +53,7 @@ public class CourseService implements ICourseService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Course not found"));
 
         modelMapper.map(dto, course);
-        course.setCategory(getCategory(dto.getCategoryId()));
+//        course.setCategory(getCategory(dto.getCategoryId()));
 
         return mapToDTO(courseRepo.save(course));
     }
@@ -79,7 +80,7 @@ public class CourseService implements ICourseService {
 
     private CourseDTO mapToDTO(Course course) {
         CourseDTO dto = modelMapper.map(course, CourseDTO.class);
-        dto.setCategoryId(course.getCategory().getId());
+//        dto.setCategoryId(course.getCategory().getId());
         return dto;
     }
 

@@ -4,36 +4,52 @@ import com.example.elearning.dto.LessonDTO;
 import com.example.elearning.service.LessonService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Controller
 @RequestMapping("/lessons")
 @RequiredArgsConstructor
 public class LessonController {
 
     private final LessonService lessonService;
 
-    @PostMapping("/{courseId}")
-    public ResponseEntity<?> addLessonToCourse(@PathVariable Long courseId, @RequestBody @Valid LessonDTO lessonDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(lessonService.addLesson(courseId, lessonDTO));
-    }
-
     @GetMapping("/{lessonId}")
-    public ResponseEntity<?> getLesson(@PathVariable Long lessonId) {
-        return ResponseEntity.status(HttpStatus.OK).body(lessonService.getLesson(lessonId));
+    public String getLesson(@PathVariable Long lessonId, Model model) {
+        model.addAttribute("lesson", lessonService.getLesson(lessonId));
+        return "LessonDetail";
     }
 
-    @PutMapping("/{lessonId}")
-    public ResponseEntity<?> updateLesson(@PathVariable Long lessonId, @RequestBody @Valid LessonDTO lessonDTO) {
-        return ResponseEntity.status(HttpStatus.OK).body(lessonService.updateLesson(lessonId, lessonDTO));
+    @GetMapping("/new/{courseId}")
+    public String showCreateForm(@PathVariable Long courseId, Model model) {
+        model.addAttribute("courseId", courseId);
+        model.addAttribute("lesson", new LessonDTO());
+        return "LessonCreateForm";
     }
 
-    @DeleteMapping("/{lessonId}")
-    public ResponseEntity<?> deleteLesson(@PathVariable Long lessonId) {
+    @PostMapping("/{courseId}")
+    public String addLessonToCourse(@PathVariable Long courseId, @Valid @ModelAttribute("lesson") LessonDTO lessonDTO) {
+        lessonService.addLesson(courseId, lessonDTO);
+        return "redirect:/courses/" + courseId;
+    }
+
+    @GetMapping("/{lessonId}/edit")
+    public String showEditForm(@PathVariable Long lessonId, Model model) {
+        model.addAttribute("lesson", lessonService.getLesson(lessonId));
+        return "LessonUpdateForm";
+    }
+
+    @PostMapping("/{lessonId}/update")
+    public String updateLesson(@PathVariable Long lessonId, @Valid @ModelAttribute("lesson") LessonDTO lessonDTO) {
+        lessonService.updateLesson(lessonId, lessonDTO);
+        return "redirect:/courses/" + lessonDTO.getCourseId();
+    }
+
+    @PostMapping("/{lessonId}/delete")
+    public String deleteLesson(@PathVariable Long lessonId) {
+        Long courseId = lessonService.getLesson(lessonId).getCourseId();
         lessonService.deleteLesson(lessonId);
-        return ResponseEntity.noContent().build();
+        return "redirect:/courses/" + courseId;
     }
 }
-

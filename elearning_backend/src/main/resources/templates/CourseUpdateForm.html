@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Course</title>
+    <link th:href="@{/webjars/bootstrap/5.2.2/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/webjars/font-awesome/5.15.4/css/all.min.css}" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Edit Course</h2>
+    <form th:action="@{/courses/{id}(id=${course.id})}"
+          th:object="${course}" method="post" class="needs-validation" novalidate>
+        <input type="hidden" name="_method" value="put"/>
+        <div class="mb-3">
+            <label for="name" class="form-label">Course Name</label>
+            <input type="text" class="form-control" id="name" th:field="*{name}" required>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
+                Please provide a course name.
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="numberOfSessions" class="form-label">Number of Sessions</label>
+            <input type="number" class="form-control" id="numberOfSessions" th:field="*{numberOfSessions}" required min="1">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('numberOfSessions')}" th:errors="*{numberOfSessions}">
+                Please provide number of sessions.
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="durationHours" class="form-label">Duration (hours)</label>
+            <input type="number" class="form-control" id="durationHours" th:field="*{durationHours}" required min="1">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('durationHours')}" th:errors="*{durationHours}">
+                Please provide duration hours.
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" th:field="*{description}" rows="3" required></textarea>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">
+                Please provide a description.
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Course</button>
+        <a th:href="@{/courses}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+<script th:src="@{/webjars/jquery/3.6.3/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/5.2.2/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

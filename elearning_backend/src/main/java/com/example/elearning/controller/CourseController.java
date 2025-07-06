@@ -4,11 +4,11 @@ import com.example.elearning.dto.CourseDTO;
 import com.example.elearning.service.CourseService;
 import jakarta.validation.Valid;
 import lombok.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Controller
 @RequestMapping("/courses")
 @RequiredArgsConstructor
 public class CourseController {
@@ -16,39 +16,56 @@ public class CourseController {
     private final CourseService courseService;
 
     @GetMapping
-    public ResponseEntity<?> getAllCourses() {
-        return ResponseEntity.ok(courseService.getAllCourses());
+    public String getAllCourses(Model model) {
+        model.addAttribute("courses", courseService.getAllCourses());
+        return "CourseList";
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getCourseById(@PathVariable Long id) {
-        return ResponseEntity.ok(courseService.getCourseById(id));
+    public String getCourseById(@PathVariable Long id, Model model) {
+        model.addAttribute("course", courseService.getCourseById(id));
+        return "CourseDetail";
     }
 
-    @PostMapping
-    public ResponseEntity<?> createCourse(@RequestBody @Valid CourseDTO courseDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(courseService.createCourse(courseDTO));
+    @GetMapping("/new")
+    public String showCreateForm(Model model) {
+        model.addAttribute("course", new CourseDTO());
+        return "CourseCreateForm";
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateCourse(@PathVariable Long id, @RequestBody @Valid CourseDTO courseDTO) {
-        return ResponseEntity.status(HttpStatus.OK).body(courseService.updateCourse(id, courseDTO));
+    @PostMapping("/create")
+    public String createCourse(@Valid @ModelAttribute("course") CourseDTO courseDTO) {
+        courseService.createCourse(courseDTO);
+        return "redirect:/courses";
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCourse(@PathVariable Long id) {
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        model.addAttribute("course", courseService.getCourseById(id));
+        return "CourseUpdateForm";
+    }
+
+    @PostMapping("/{id}")
+    public String updateCourse(@PathVariable Long id, @Valid @ModelAttribute("course") CourseDTO courseDTO) {
+        courseService.updateCourse(id, courseDTO);
+        return "redirect:/courses";
+    }
+
+    @PostMapping("/{id}/delete")
+    public String deleteCourse(@PathVariable Long id) {
         courseService.deleteCourse(id);
-        return ResponseEntity.noContent().build();
+        return "redirect:/courses";
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> searchCourses(@RequestParam String q) {
-        return ResponseEntity.ok(courseService.searchCourses(q));
+    public String searchCourses(@RequestParam String q, Model model) {
+        model.addAttribute("courses", courseService.searchCourses(q));
+        return "CourseList";
     }
 
-    @GetMapping("/category/{id}")
-    public ResponseEntity<?> getCoursesByCategory(@PathVariable Long id) {
-        return ResponseEntity.ok(courseService.getCoursesByCategory(id));
-    }
+//    @GetMapping("/category/{id}")
+//    public String getCoursesByCategory(@PathVariable Long id, Model model) {
+//        model.addAttribute("courses", courseService.getCoursesByCategory(id));
+//        return "CourseList";
+//    }
 }
-
